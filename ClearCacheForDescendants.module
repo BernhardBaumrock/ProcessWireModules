@@ -17,7 +17,7 @@ class ClearCacheForDescendants extends WireData implements Module {
 
         return array(
             'title' => 'Clear cache for descendants', 
-            'version' => 1, 
+            'version' => 2, 
             'summary' => 'Deletes cache (PW MarkupCache) for all descendant pages after PageSave',
             'singular' => true, 
             'autoload' => true, 
@@ -33,7 +33,7 @@ class ClearCacheForDescendants extends WireData implements Module {
      *
      */
     public function init() {
-        $this->pages->addHookAfter('save', $this, 'clearCache');
+        $this->pages->addHookAfter('saveReady', $this, 'clearCache');
     }
 
     /**
