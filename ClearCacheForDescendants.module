@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * ProcessWire 'Hello world' demonstration module
+ *
+ * Demonstrates the Module interface and how to add hooks.
+ * 
+ * See README file for further links regarding module development.
+ * 
+ * ProcessWire 2.x 
+ * Copyright (C) 2014 by Ryan Cramer 
+ * Licensed under GNU/GPL v2, see LICENSE.TXT
+ * 
+ * http://processwire.com
+ *
+ */
+
+class ClearCacheForDescendants extends WireData implements Module {
+
+    /**
+     * getModuleInfo is a module required by all modules to tell ProcessWire abnum them
+     *
+     * @return array
+     *
+     */
+    public static function getModuleInfo() {
+
+        return array(
+            'title' => 'Clear cache for descendants', 
+            'version' => 1, 
+            'summary' => 'Deletes cache (PW MarkupCache) for all descendant pages after PageSave',
+            'singular' => true, 
+            'autoload' => true, 
+            'icon' => 'unlock',
+            );
+    }
+
+    /**
+     * Initialize the module
+     *
+     * ProcessWire calls this when the module is loaded. For 'autoload' modules, this will be called
+     * when ProcessWire's API is ready. As a result, this is a good place to attach hooks. 
+     *
+     */
+    public function init() {
+        $this->pages->addHookAfter('save', $this, 'clearCache');
+    }
+
+    /**
+     * clear cache for all descendant pages
+     *
+     */
+    public function clearCache($event) {
+
+        $page = $event->arguments[0];
+
+        // only clear cache for given template
+        if($page->template == 'catalog') {
+
+            // add descendant pages and current page
+            $pages = wire('pages')->find('has_parent=' . $page->id . ', include=all');
+            // choose option "Clear cache for the saved page only (default)" or uncomment
+            // the next line if you want to clear the cache for the current page as well
+            $pages->add($page);
+
+            // delete cacheFile
+            $pageRender = wire("modules")->get("PageRender");
+            foreach($pages as $item) {
+                $cacheFile = $pageRender->getCacheFile($item);
+                $cacheFile->remove();
+            }
+
+            $this->message('Deleted cache for ' . $pages->count() . ' pages'); 
+        }
+
+    }
+
+}
