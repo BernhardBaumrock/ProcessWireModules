@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * Module for ProcessWire that clears cache of descendant pages
+ *
+ */
+
+class ClearCacheForParent extends WireData implements Module {
+
+    /**
+     * getModuleInfo is a module required by all modules to tell ProcessWire abnum them
+     *
+     * @return array
+     *
+     */
+    public static function getModuleInfo() {
+
+        return array(
+            'title' => 'Clear cache for parent page', 
+            'version' => 1, 
+            'summary' => 'Deletes cache (PW MarkupCache) for parent page after PageSave',
+            'singular' => true, 
+            'autoload' => true, 
+            'icon' => 'unlock',
+            );
+    }
+
+    /**
+     * Initialize the module
+     *
+     * ProcessWire calls this when the module is loaded. For 'autoload' modules, this will be called
+     * when ProcessWire's API is ready. As a result, this is a good place to attach hooks. 
+     *
+     */
+    public function init() {
+        $this->pages->addHookAfter('saveReady', $this, 'clearCache');
+    }
+
+    /**
+     * clear cache for all descendant pages
+     *
+     */
+    public function clearCache($event) {
+
+        $page = $event->arguments[0];
+
+        // only clear cache for given template
+        if($page->template == 'catalog') {
+
+            $pageRender = wire("modules")->get("PageRender");
+            $cacheFile = $pageRender->getCacheFile($page->parent);
+            $cacheFile->remove();
+            
+            $this->message('Deleted cache for parent page ' . $page->parent->path); 
+        }
+
+    }
+
+}
