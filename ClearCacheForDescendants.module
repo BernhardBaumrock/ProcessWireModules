@@ -2,6 +2,8 @@
 
 /**
  * Module for ProcessWire that clears cache of descendant pages
+ * feature is now in the core!!!
+ * https://processwire.com/blog/posts/processwire-core-updates-pull-requests-and-more-2.5.25/#clear-page-cache-by-matching-pages-with-custom-selector
  *
  */
 
