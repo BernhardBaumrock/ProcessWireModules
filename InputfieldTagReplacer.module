@@ -35,7 +35,11 @@ class InputfieldTagReplacer extends WireData implements Module {
         $event->return = str_replace($search, $replace, $event->return);
     }
 
-    // put your own replacement methods here
+    // ########################################
+    // put your custom replacement methods here
+    // ########################################
+    
+    // example how to add your own replacement method
     private function complexExample() {
         return '<h3>Do you like Logs?</h3><p><a class="pw-modal" href="/admin/setup/logs/?modal=1">Open the Logs in a modal window!</a></p>';
     }
