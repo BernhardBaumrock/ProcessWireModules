@@ -1,0 +1,43 @@
+<?php
+class InputfieldTagReplacer extends WireData implements Module {
+
+    public static function getModuleInfo() {    
+        return array(
+            'title' => 'Inputfield Tag Replacer',
+            'version' => 100,
+            'summary' => 'Lets you replace tags in your fields (eg descriptions) like [demo] with any PHP-snippet',
+            'singular' => true,
+            'autoload' => true,
+            );
+    }
+    
+    public function init() {
+        $this->addHookAfter('InputfieldWrapper::render', $this, 'replaceTags'); 
+    }
+    
+    public function replaceTags(HookEvent $event) {
+
+        $page = wire('page');
+        if($page->process !== 'ProcessPageEdit') return; // prevent replacement when editing the field itself
+
+        $replacer = array(
+            // simple replacement
+            '[simple]' => '<h3>Simple replacement Demo-Headline on Page ' . $page->path . '</h3>',
+
+            // more complex replacement
+            '[complex]' => $this->complexExample(),
+        );
+        
+        foreach($replacer as $key => $val) {
+            $search[] = $key;
+            $replace[] = $val;
+        }
+        $event->return = str_replace($search, $replace, $event->return);
+    }
+
+    // put your own replacement methods here
+    private function complexExample() {
+        return '<h3>Do you like Logs?</h3><p><a class="pw-modal" href="/admin/setup/logs/?modal=1">Open the Logs in a modal window!</a></p>';
+    }
+    
+}
