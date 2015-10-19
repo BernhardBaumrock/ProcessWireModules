@@ -4,7 +4,7 @@ class InputfieldTagReplacer extends WireData implements Module {
     public static function getModuleInfo() {    
         return array(
             'title' => 'Inputfield Tag Replacer',
-            'version' => 100,
+            'version' => 101,
             'summary' => 'Lets you replace tags in your fields (eg descriptions) like [demo] with any PHP-snippet',
             'singular' => true,
             'autoload' => true,
