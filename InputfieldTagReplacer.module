@@ -19,10 +19,14 @@ class InputfieldTagReplacer extends WireData implements Module {
 
         $page = wire('page');
         if($page->process !== 'ProcessPageEdit') return; // prevent replacement when editing the field itself
+        
+        // the currently edited page will be available as $p
+        $process = $this->wire('process');
+        if($process && $process->className() == 'ProcessPageEdit') $p = $process->getPage();
 
         $replacer = array(
             // simple replacement
-            '[simple]' => '<h3>Simple replacement Demo-Headline on Page ' . $page->path . '</h3>',
+            '[simple]' => '<h3>Simple replacement Demo-Headline on Page ' . $p->path . '</h3>',
 
             // more complex replacement
             '[complex]' => $this->complexExample(),
